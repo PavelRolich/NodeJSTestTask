@@ -3,10 +3,10 @@ const router = express.Router()
 const Product = require('../models/product.model')
 const verify = require('./verifyToken')
 
-router.get('/', verify, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const response = await Product.find({ userId: req.user })
-    const product = response.map(product => {
+    const products = response.map(product => {
       return {
         title: product.title,
         text: product.text,
@@ -14,7 +14,7 @@ router.get('/', verify, async (req, res) => {
         id: product._id
       }
     })
-    res.status(200).json(product)
+    res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ message: error })
   }
