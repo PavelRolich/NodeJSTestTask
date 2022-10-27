@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
     if (usernameExist) return res.status(400).json({ message: 'Username already exist' })
 
     const response = await user.save()
-    const token = jwt.sign({ _id: response._id }, process.env.TOKEN_SECRET)
+    const token = jwt.sign({ _id: response._id, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, process.env.TOKEN_SECRET)
 
     const userActivity = new UserActivity({
       userId: response._id,
