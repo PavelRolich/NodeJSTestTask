@@ -44,7 +44,7 @@ router.get('/:productId', verify, async (req, res) => {
         reviewId: review._id
       }
     })
-    res.status(200).json(reviews)
+    res.status(200).json(reviews.reverse())
   } catch (error) {
     res.status(500).json({ message: error })
   }
