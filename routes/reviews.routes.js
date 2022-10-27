@@ -23,25 +23,25 @@ router.post('/:productId', verify, async (req, res) => {
 
 router.get('/:productId', verify, async (req, res) => {
   try {
-    const response = await Review.aggregate([
-      {
-        $lookup: {
-          from: "Users",
-          localField: "userId",
-          foreignField: "userId",
-          as: "created_by"
-        }
-      },
-      { $match: { productId: req.params.productId } }
-    ])
+    const response = await Review.aggregate([{ $set: { userId: { $toObjectId: "$userId" } } }])
+      .match({ productId: req.params.productId })
+      .lookup({
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'created_by',
+        pipeline: [
+          { '$project': { '_id': 1, 'username': 1 } }
+        ]
+      })
 
     const reviews = response.map(review => {
       return {
         created_by: review.created_by[0],
         text: review.text,
-        product: review.product,
+        productId: review.productId,
         rate: review.rate,
-        id: review._id
+        reviewId: review._id
       }
     })
     res.status(200).json(reviews)

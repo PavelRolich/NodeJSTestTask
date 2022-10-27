@@ -20,4 +20,6 @@ const ReviewsSchema = mongoose.Schema({
   },
 })
 
-module.exports = mongoose.model('Reviews', ReviewsSchema)
+module.exports = {
+  Review: mongoose.model('Reviews', ReviewsSchema)
+}
